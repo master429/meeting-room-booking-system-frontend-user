@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { Badge, Button, Form, Input, Table, message } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import "./meeting_room_list.css";
 import { ColumnsType } from "antd/es/table";
 import { useForm } from "antd/es/form/Form";
 import { searchMeetingRoomList } from "../../interface/interfaces";
+import { CreateBookingModal } from "./CreateBookingModal";
 
 interface SearchMeetingRoom {
   name: string;
@@ -11,7 +13,7 @@ interface SearchMeetingRoom {
   equipment: string;
 }
 
-interface MeetingRoomSearchResult {
+export interface MeetingRoomSearchResult {
   id: number;
   name: string;
   capacity: number;
@@ -25,7 +27,13 @@ interface MeetingRoomSearchResult {
 
 export function MeetingRoomList() {
   const [pageNo, setPageNo] = useState<number>(1);
+
   const [pageSize, setPageSize] = useState<number>(10);
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const [currentMeetingRoom, setCurrentMeetingRoom] =
+    useState<MeetingRoomSearchResult>();
 
   const [meetingRoomResult, setMeetingRoomResult] = useState<
     Array<MeetingRoomSearchResult>
@@ -75,7 +83,15 @@ export function MeetingRoomList() {
         title: "操作",
         render: (_, record) => (
           <div>
-            <a href="#">预定</a>
+            <a
+              href="#"
+              onClick={() => {
+                setIsCreateModalOpen(true);
+                setCurrentMeetingRoom(record);
+              }}
+            >
+              预定
+            </a>
           </div>
         ),
       },
@@ -162,6 +178,15 @@ export function MeetingRoomList() {
           }}
         />
       </div>
+      {currentMeetingRoom ? (
+        <CreateBookingModal
+          meetingRoom={currentMeetingRoom}
+          isOpen={isCreateModalOpen}
+          handleClose={() => {
+            setIsCreateModalOpen(false);
+          }}
+        ></CreateBookingModal>
+      ) : null}
     </div>
   );
 }
