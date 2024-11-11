@@ -221,3 +221,7 @@ export async function bookingAdd(booking: CreateBooking) {
     note: booking.note,
   });
 }
+
+export async function presignedUrl(fileName: string) {
+  return axiosInstance.get(`/minio/presignedUrl?name=${fileName}`);
+}
